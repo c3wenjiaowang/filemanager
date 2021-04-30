@@ -79,6 +79,17 @@ class ListView extends Component {
     if (this.props.loading !== nextProps.loading) {
       // Force recalculate scrollHeight for appropriate handle "PageUp, PageDown, Home, End", etc. keys
       this.setState({ scrollHeight: nextProps.items.length * ROW_HEIGHT });
+      if (nextProps.selection.length !== 0) {
+        const firstSelected = nextProps.selection[0];
+        let index = 0;
+        for (let i = 0; i < nextProps.items.length; i++) {
+          if (nextProps.items[i].id === firstSelected) {
+            index = i;
+            break;
+          }
+        }
+        this.scrollToIndex(index);
+      }
     }
   }
 
@@ -243,6 +254,7 @@ class ListView extends Component {
                         overscanRowCount={10}
                         onScroll={this.handleScroll}
                         scrollToIndex={scrollToIndex}
+                        scrollToAlignment="center"
                         scrollTop={scrollTop}
                         sort={this.handleSort} // eslint-disable-line react/jsx-handler-names
                         sortBy={sortBy}

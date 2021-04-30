@@ -33,7 +33,10 @@ const propTypes = {
   onResourceLocationChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   onResourceChange: PropTypes.func,
-  onResourceChildrenChange: PropTypes.func
+  onResourceChildrenChange: PropTypes.func,
+  rootTooltipContent: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+  toolTipStyle: PropTypes.object,
+  loadingComp: PropTypes.func,
 };
 
 const defaultProps = {
@@ -55,7 +58,10 @@ const defaultProps = {
   onResourceLocationChange: () => {},
   onSelectionChange: () => {},
   onResourceChange: () => {},
-  onResourceChildrenChange: () => {}
+  onResourceChildrenChange: () => {},
+  rootTooltipContent: '',
+  toolTipStyle: null,
+  loadingComp: null,
 };
 
 const MONITOR_API_AVAILABILITY_TIMEOUT = 16;
@@ -413,7 +419,10 @@ class FileNavigator extends Component {
       className,
       listViewLayout,
       signInRenderer,
-      viewLayoutOptions
+      viewLayoutOptions,
+      rootTooltipContent,
+      toolTipStyle,
+      loadingComp,
     } = this.props;
 
     const {
@@ -463,6 +472,29 @@ class FileNavigator extends Component {
 
     const rowContextMenuId = `row-context-menu-${id}`;
     const filesViewContextMenuId = `files-view-context-menu-${id}`;
+    const listView = (loadingView) && (loadingComp) ? (loadingComp()) : (<ListView
+      rowContextMenuId={rowContextMenuId}
+      filesViewContextMenuId={filesViewContextMenuId}
+      onKeyDown={this.handleViewKeyDown}
+      onRowClick={this.handleResourceItemClick}
+      onRowRightClick={this.handleResourceItemRightClick}
+      onRowDoubleClick={this.handleResourceItemDoubleClick}
+      onSelection={this.handleSelectionChange}
+      onSort={this.handleSort}
+      onRef={this.handleViewRef}
+      loading={loadingView}
+      selection={selection}
+      sortBy={sortBy}
+      sortDirection={sortDirection}
+      items={resourceChildren}
+      layout={listViewLayout}
+      layoutOptions={viewLayoutOptions}
+    >
+      <Notifications
+        className="oc-fm--file-navigator__notifications"
+        notifications={notifications}
+      />
+    </ListView>);
 
     return (
       <div
@@ -484,34 +516,14 @@ class FileNavigator extends Component {
           />
         </div>
         <div className="oc-fm--file-navigator__view">
-          <ListView
-            rowContextMenuId={rowContextMenuId}
-            filesViewContextMenuId={filesViewContextMenuId}
-            onKeyDown={this.handleViewKeyDown}
-            onRowClick={this.handleResourceItemClick}
-            onRowRightClick={this.handleResourceItemRightClick}
-            onRowDoubleClick={this.handleResourceItemDoubleClick}
-            onSelection={this.handleSelectionChange}
-            onSort={this.handleSort}
-            onRef={this.handleViewRef}
-            loading={loadingView}
-            selection={selection}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            items={resourceChildren}
-            layout={listViewLayout}
-            layoutOptions={viewLayoutOptions}
-          >
-            <Notifications
-              className="oc-fm--file-navigator__notifications"
-              notifications={notifications}
-            />
-          </ListView>
+          { listView }
         </div>
         <div className="oc-fm--file-navigator__location-bar">
           <LocationBar
             items={locationItems}
             loading={loadingResourceLocation}
+            rootTooltipContent={rootTooltipContent}
+            toolTipStyle={toolTipStyle}
           />
         </div>
         <ContextMenu
