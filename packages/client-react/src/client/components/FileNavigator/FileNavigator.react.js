@@ -85,7 +85,7 @@ class FileNavigator extends Component {
     selection: [],
     sortBy: 'title',
     sortDirection: SortDirection.ASC,
-    initializedCapabilities: []
+    initializedCapabilities: [],
   };
 
   componentDidMount() {
@@ -122,7 +122,6 @@ class FileNavigator extends Component {
 
   initialize = async () => {
     const { apiOptions, api, capabilities, viewLayoutOptions } = this.props;
-
     const capabilitiesProps = this.getCapabilitiesProps();
     const initializedCapabilities = capabilities(apiOptions, capabilitiesProps);
 
@@ -437,7 +436,7 @@ class FileNavigator extends Component {
       resourceLocation,
       selection,
       sortBy,
-      sortDirection
+      sortDirection,
     } = this.state;
 
     let viewLoadingElement = null;
@@ -495,7 +494,6 @@ class FileNavigator extends Component {
         notifications={notifications}
       />
     </ListView>);
-
     return (
       <div
         id={id}
